@@ -59,6 +59,62 @@ ipaas-tasks-quarkus/
 
 ---
 
+## 🧰 Recursos Utilizados
+
+O projeto foi desenvolvido utilizando um conjunto moderno de tecnologias:
+
+| Recurso / Tecnologia        | Versão        | Observações |
+|-----------------------------|--------------|-------------|
+| **Java**                   | 21 (LTS)     | Versão mínima requerida para build e execução |
+| **Quarkus**                | 3.x          | Framework principal para microsserviços |
+| **Maven**                  | 3.9+         | Gerenciador de dependências |
+| **Hibernate ORM Panache**  | 3.x (incluso no Quarkus) | Simplificação de repositórios e persistência |
+| **Flyway**                 | 9.x+         | Controle de versão do banco de dados |
+| **JUnit 5**                | 5.x          | Testes unitários |
+| **RestAssured**            | 5.x          | Testes de integração com endpoints REST |
+| **Docker**                 | 24.x+        | Contêineres da aplicação e banco |
+| **Docker Compose**         | 2.x+         | Orquestração de múltiplos contêineres |
+| **Postman**                | 10+          | Validação manual de endpoints via coleção pronta |
+
+---
+
+## ⚙️ Pré-requisitos de Ambiente
+
+Para executar o projeto de forma **plug and play**, você precisa ter instalado:
+
+- **Java 21 (ou superior)**  
+  Verifique com:
+  ```bash
+  java -version
+  ```
+- **Maven 3.9+**  
+  Verifique com:
+  ```bash
+  mvn -version
+  ```
+- **Docker 24.x+** e **Docker Compose 2.x+**  
+  Verifique com:
+  ```bash
+  docker -v
+  docker compose version
+  ```
+- **Git** (para clonar o repositório):
+  ```bash
+  git --version
+  ```
+- **Postman** (opcional, para testes manuais com a coleção já incluída):
+  - Importar a collection e o environment em `src/main/resources/postman/`
+
+### 💡 Observações
+- Não é necessário instalar banco de dados localmente.
+- O **Docker Compose** já sobe automaticamente a aplicação **+ banco de dados** configurados com scripts do Flyway.
+- Após clonar e rodar `docker compose up -d --build`, a aplicação estará disponível em:
+  ```
+  http://localhost:8080/api/tasks
+  ```
+
+---
+
 ## ⚡ Subindo o projeto (100% Plug and Play)
 
 <details>
@@ -122,17 +178,6 @@ docker logs -f ipaas-tasks-app
 - **DELETE /api/subtasks/{id}** → remove subtarefa.
 
 </details>
-
----
-
-## 🛠️ Tecnologias utilizadas
-
-- **Java 21 + Quarkus 3.x** (framework principal)
-- **Hibernate ORM Panache** (persistência simplificada)
-- **Flyway** (controle de versão de banco de dados)
-- **Docker Compose** (orquestração)
-- **Postman** (coleção pronta para testes)
-- **JUnit 5 + RestAssured** (testes automatizados)
 
 ---
 
