@@ -1,0 +1,36 @@
+quarkus:
+  http:
+    port: 8080
+    cors: true
+
+  jackson:
+    time-zone: America/Sao_Paulo
+
+  datasource:
+    db-kind: postgresql
+    username: ${DB_USER:ipaas}
+    password: ${DB_PASS:ipaas}
+    jdbc:
+      url: ${DB_URL:jdbc:postgresql://db:5432/ipaas}
+
+  hibernate-orm:
+    database:
+      generation: none
+    log:
+      sql: false
+
+  flyway:
+    migrate-at-start: true
+    baseline-on-migrate: true
+    table: flyway_schema_history
+    locations: classpath:db/migration
+
+  smallrye-openapi:
+    path: /q/openapi
+    info-title: iPaaS Tasks API
+    info-description: API de gerenciamento de tarefas (usuário, tarefa, subtarefa)
+    info-version: 1.0.0
+
+  swagger-ui:
+    always-include: true
+    path: /q/swagger-ui
