@@ -29,9 +29,8 @@ ipaas-tasks-quarkus/
 │   └── resources/
 │       ├── application.yaml    # Configuração Quarkus
 │       └── db/migration/       # Scripts Flyway (DDL + dados iniciais)
+│       └── postman/            # Collection + Environment Postman
 ├── src/test/java/com/ipaas/tasks/ # Testes automatizados
-└── postman/
-    └── ipaas_tasks_collection.json  # Collection Postman completa
 ```
 
 </details>
@@ -41,22 +40,22 @@ ipaas-tasks-quarkus/
 ## 🎯 Por que essa estrutura?
 
 - **Separação clara de camadas**:
-    - `application` → camada de entrada, expõe APIs.
-    - `domain` → regra de negócio isolada.
-    - `infrastructure` → persistência e integrações.
+  - `application` → camada de entrada, expõe APIs.
+  - `domain` → regra de negócio isolada.
+  - `infrastructure` → persistência e integrações.
 
 - **Plug and Play**: basta rodar `docker compose up` → banco e aplicação sobem juntos.
 
 - **Scripts automáticos**:
-    - O diretório `db/migration/` contém **migrations Flyway**.
-    - Ao iniciar, o container cria **tabelas, constraints e dados iniciais** automaticamente.
+  - O diretório `db/migration/` contém **migrations Flyway**.
+  - Ao iniciar, o container cria **tabelas, constraints e dados iniciais** automaticamente.
 
 - **Coleção Postman inclusa**: valida todos os endpoints sem precisar escrever nada.
 
 - **Benefício técnico**:
-    - Fácil manutenção → cada camada com responsabilidade única.
-    - Escalabilidade → isolamos services, entities e resources.
-    - Portabilidade → sobe em qualquer ambiente com Docker.
+  - Fácil manutenção → cada camada com responsabilidade única.
+  - Escalabilidade → isolamos services, entities e resources.
+  - Portabilidade → sobe em qualquer ambiente com Docker.
 
 ---
 
@@ -139,18 +138,42 @@ docker logs -f ipaas-tasks-app
 
 ## 📬 Testando com Postman
 
-Uma **coleção Postman completa** está incluída em `/postman/ipaas_tasks_collection.json`.
+O projeto já inclui uma **coleção Postman completa** e um **arquivo de Environment** na pasta:
+
+```
+src/main/resources/postman/
+```
+
+### 📂 Conteúdo:
+- **ipaas_tasks_collection.json** → coleção com todos os endpoints (Users, Tasks e Subtasks).
+- **ipaas_tasks_environment.json** → variáveis de ambiente prontas, incluindo `baseUrl`, `userId`, `taskId` e `subtaskId`.
+
+Isso garante que você consiga testar a API de forma **plug and play**.
+
+---
 
 <details>
-<summary><strong>Exemplos de uso</strong></summary>
+<summary><strong>🌐 Como importar no Postman</strong></summary>
 
-- Criar usuário → já captura `userId` e `ownerId`.
-- Criar tarefa → já preenche `taskId`.
-- Criar subtarefa → já vincula ao `taskId`.
-- Atualizar status → respeita regra de subtarefas.
-- Fluxo E2E → executa todas as operações em sequência.
+1. Abra o Postman.
+2. Clique em **Import** → selecione os arquivos da pasta `src/main/resources/postman/`.
+3. Certifique-se de selecionar também o **Environment** para carregar variáveis automaticamente.
+4. Execute as requisições em ordem:
+
+  - **Users** → cria usuários e captura automaticamente `userId`, `ownerId` e `assigneeId`.
+  - **Tasks** → cria tarefa vinculada, atualiza status e permite filtro por `status`.
+  - **Subtasks** → cria subtarefas vinculadas e testa as regras de bloqueio de conclusão.
+  - **Fluxo Rápido (E2E)** → executa tudo em sequência simulando o uso real da API.
 
 </details>
+
+---
+
+### ✅ Benefícios
+- Nenhuma configuração manual → basta importar e rodar.
+- Variáveis de ambiente garantem reaproveitamento automático de IDs.
+- Possibilita rodar cenários completos (CRUD + regras de negócio) em minutos.
+- Documentação viva → a coleção serve como contrato de uso da API.
 
 ---
 
@@ -196,3 +219,8 @@ Os testes sobem um **container de banco em memória (H2)**, garantindo isolament
 
 ---
 
+## 📖 Próximos passos
+
+- Deploy em nuvem (Kubernetes/Openshift).
+- Monitoramento com Prometheus/Grafana.
+- Autenticação JWT para segurança.  

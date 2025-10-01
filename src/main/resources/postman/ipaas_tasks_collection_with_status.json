@@ -1,0 +1,669 @@
+{
+  "info": {
+    "name": "iPaaS Tasks API - Coleção Completa",
+    "_postman_id": "55d63f3e-702c-49f5-aa56-2e37706097dc",
+    "description": "Coleção plug-and-play para todos os endpoints (Users, Tasks, Subtasks). Já vem com variáveis, pré-scripts e testes que capturam IDs automaticamente.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1) Users",
+      "item": [
+        {
+          "name": "Create User (owner)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{userName}}\",\n  \"email\": \"{{userEmail}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.variables.set(\"userName\", \"Usuário \"+ts);",
+                  "pm.variables.set(\"userEmail\", `user_${ts}@ipaas.local`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// captura userId e ownerId",
+                  "pm.test(\"201 Created\", function(){ pm.response.to.have.status(201); });",
+                  "const j = pm.response.json();",
+                  "pm.collectionVariables.set(\"userId\", j.id);",
+                  "pm.collectionVariables.set(\"ownerId\", j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create User (assignee)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{assigneeName}}\",\n  \"email\": \"{{assigneeEmail}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.variables.set(\"assigneeName\", \"Responsável \"+ts);",
+                  "pm.variables.set(\"assigneeEmail\", `assignee_${ts}@ipaas.local`);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// captura assigneeId",
+                  "pm.test(\"201 Created\", function(){ pm.response.to.have.status(201); });",
+                  "const j = pm.response.json();",
+                  "pm.collectionVariables.set(\"assigneeId\", j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{userId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{userId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"{{userName}} (atualizado)\",\n  \"email\": \"{{userEmail}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete User (assignee)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/{{assigneeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users",
+                "{{assigneeId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2) Tasks",
+      "item": [
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tarefa de exemplo\",\n  \"description\": \"Criada via Postman\",\n  \"status\": \"NOVA\",\n  \"priority\": \"MEDIA\",\n  \"ownerId\": \"{{ownerId}}\",\n  \"assigneeId\": \"{{assigneeId}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// captura taskId",
+                  "pm.test(\"201 Created\", function(){ pm.response.to.have.status(201); });",
+                  "const j = pm.response.json();",
+                  "pm.collectionVariables.set(\"taskId\", j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks?status={{taskStatus}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "{{taskStatus}}",
+                  "description": "Filtro opcional: NOVA, EM_ANDAMENTO, CONCLUIDA"
+                }
+              ]
+            },
+            "description": "Lista todas as tarefas ou filtra por status."
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Tarefa de exemplo (editada)\",\n  \"description\": \"Atualizada via Postman\",\n  \"status\": \"EM_ANDAMENTO\",\n  \"priority\": \"ALTA\",\n  \"ownerId\": \"{{ownerId}}\",\n  \"assigneeId\": \"{{assigneeId}}\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update Task Status → CONCLUIDA",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONCLUIDA\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3) Subtasks",
+      "item": [
+        {
+          "name": "Create Subtask (nested)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/subtasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}",
+                "subtasks"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"taskId\": \"{{taskId}}\",\n  \"title\": \"Sub 1\",\n  \"description\": \"Subtarefa criada via Postman\",\n  \"status\": \"NOVA\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// captura subtaskId",
+                  "pm.test(\"201 Created\", function(){ pm.response.to.have.status(201); });",
+                  "const j = pm.response.json();",
+                  "pm.collectionVariables.set(\"subtaskId\", j.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "List Subtasks of Task (nested)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/subtasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}",
+                "subtasks"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Subtask Status → CONCLUIDA",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/subtasks/{{subtaskId}}/status",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "subtasks",
+                "{{subtaskId}}",
+                "status"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONCLUIDA\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete Subtask",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/subtasks/{{subtaskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "subtasks",
+                "{{subtaskId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4) Fluxo Rápido (end-to-end)",
+      "item": [
+        {
+          "name": "E2E: 1) List Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            }
+          }
+        },
+        {
+          "name": "E2E: 2) List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks"
+              ]
+            }
+          }
+        },
+        {
+          "name": "E2E: 3) Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "E2E: 4) List Subtasks by Task",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks/{{taskId}}/subtasks",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "tasks",
+                "{{taskId}}",
+                "subtasks"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "userId",
+      "value": ""
+    },
+    {
+      "key": "assigneeId",
+      "value": ""
+    },
+    {
+      "key": "ownerId",
+      "value": ""
+    },
+    {
+      "key": "taskId",
+      "value": ""
+    },
+    {
+      "key": "subtaskId",
+      "value": ""
+    },
+    {
+      "key": "taskStatus",
+      "value": ""
+    }
+  ]
+}
